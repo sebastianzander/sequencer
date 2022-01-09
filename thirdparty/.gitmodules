@@ -1,0 +1,8 @@
+[submodule "fmt"]
+	shallow = true
+[submodule "eigen"]
+	shallow = true
+[submodule "yaml-cpp"]
+	shallow = true
+[submodule "cxxopts"]
+	shallow = true

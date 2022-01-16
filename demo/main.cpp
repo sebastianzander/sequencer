@@ -22,14 +22,14 @@ int main(int argc, char* argv[])
 
     options.add_options()
         ("h,help", "Prints usage information")
-        ("r,rules", "Generates a sequence from the given list of comma separated sequence rules", cxxopts::value<vector<string>>())
-        ("s,sequence", "Solves the sequence specified by the list of comma separated integer or real numbers and returns the predicted continuation of the sequence", cxxopts::value<vector<double>>())
+        ("r,rules", "Generates a sequence from the given list of semicolon separated sequence rules", cxxopts::value<vector<string>>())
+        ("s,sequence", "Solves the sequence specified by the list of semicolon separated integer or real numbers and returns the predicted continuation of the sequence", cxxopts::value<vector<double>>())
         ("m,allow-multiple-predictions", "Enables whether the sequence solver is allowed to return multiple predictions if there is ambiguity or uncertainty", cxxopts::value<bool>()->default_value("false"))
         ("c,count", "Sets the length of the sequence to be generated (if -r) or the length of the predicted continuation of the given sequence (if -s)", cxxopts::value<size_t>()->default_value("1"))
         ("start-index", "Sets the start index of the sequence to be generated (default 0)", cxxopts::value<size_t>()->default_value("0"))
         ("a,run-all-tasks", "Runs all sequence solver tasks from demo.yaml, no matter whether they are enabled or not", cxxopts::value<bool>()->default_value("false"))
-        ("tasks", "Runs all sequence solver tasks from demo.yaml specified by the list of comma separated task names or descriptions, no matter whether the tasks are enabled or not", cxxopts::value<vector<string>>())
-        ("types", "Runs all sequence solver tasks from demo.yaml that belong to any of the given comma separated sequence types, no matter whether the tasks are enabled or not", cxxopts::value<vector<string>>())
+        ("tasks", "Runs all sequence solver tasks from demo.yaml specified by the list of semicolon separated task names or descriptions, no matter whether the tasks are enabled or not", cxxopts::value<vector<string>>())
+        ("types", "Runs all sequence solver tasks from demo.yaml that belong to any of the given semicolon separated sequence types, no matter whether the tasks are enabled or not", cxxopts::value<vector<string>>())
         ("o,max-recurrence-order", "Sets the maximum order when solving for linear recurrence", cxxopts::value<int>()->default_value("10"));
 
     auto parsedOptions = options.parse(argc, argv);

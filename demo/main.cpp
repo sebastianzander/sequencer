@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
         ("s,sequence", "Solves the sequence specified by the list of semicolon separated integer or real numbers and returns the predicted continuation of the sequence", cxxopts::value<vector<double>>())
         ("m,allow-multiple-predictions", "Enables whether the sequence solver is allowed to return multiple predictions if there is ambiguity or uncertainty", cxxopts::value<bool>()->default_value("false"))
         ("c,count", "Sets the length of the sequence to be generated (if -r) or the length of the predicted continuation of the given sequence (if -s)", cxxopts::value<size_t>()->default_value("1"))
-        ("start-index", "Sets the start index of the sequence to be generated (default 0)", cxxopts::value<size_t>()->default_value("0"))
+        ("start-index", "Sets the start index of the sequence to be generated", cxxopts::value<size_t>()->default_value("0"))
         ("a,run-all-tasks", "Runs all sequence solver tasks from demo.yaml, no matter whether they are enabled or not", cxxopts::value<bool>()->default_value("false"))
         ("tasks", "Runs all sequence solver tasks from demo.yaml specified by the list of semicolon separated task names or descriptions, no matter whether the tasks are enabled or not", cxxopts::value<vector<string>>())
         ("types", "Runs all sequence solver tasks from demo.yaml that belong to any of the given semicolon separated sequence types, no matter whether the tasks are enabled or not", cxxopts::value<vector<string>>())
@@ -88,7 +88,8 @@ int main(int argc, char* argv[])
             (rules.size() == 1 ? "rule" : "rules") << " ..." << endl;
 
         sequence_t sequence = generate(rules, generatorContext);
-        cout << "Generated sequence: \033[93m" << sequence << "\033[0m" << endl;
+        if(!sequence.empty())
+            cout << "Generated sequence: \033[93m" << sequence << "\033[0m" << endl;
 
         cout << endl;
     }

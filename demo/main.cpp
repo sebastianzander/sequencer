@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#define CXXOPTS_VECTOR_DELIMITER ';'
 #include <cxxopts.hpp>
 #include <sequencer/sequencer.h>
 #include <sequencer/utils.h>
@@ -15,14 +16,17 @@ std::ostream& operator<<(std::ostream &os, const sequence_t &sequence);
 
 int main(int argc, char* argv[])
 {
+    generatorContext_t generatorContext;
     solverContext_t solverContext;
     cxxopts::Options options("demo", "Short program that demonstrates the sequencer library");
 
     options.add_options()
         ("h,help", "Prints usage information")
+        ("r,rules", "Generates a sequence from the given list of comma separated sequence rules", cxxopts::value<vector<string>>())
         ("s,sequence", "Solves the sequence specified by the list of comma separated integer or real numbers and returns the predicted continuation of the sequence", cxxopts::value<vector<double>>())
         ("m,allow-multiple-predictions", "Enables whether the sequence solver is allowed to return multiple predictions if there is ambiguity or uncertainty", cxxopts::value<bool>()->default_value("false"))
-        ("c,required-predicted-continuation-count", "Sets the length of the predicted continuation of the given sequence", cxxopts::value<size_t>()->default_value("1"))
+        ("c,count", "Sets the length of the sequence to be generated (if -r) or the length of the predicted continuation of the given sequence (if -s)", cxxopts::value<size_t>()->default_value("1"))
+        ("start-index", "Sets the start index of the sequence to be generated (default 0)", cxxopts::value<size_t>()->default_value("0"))
         ("a,run-all-tasks", "Runs all sequence solver tasks from demo.yaml, no matter whether they are enabled or not", cxxopts::value<bool>()->default_value("false"))
         ("tasks", "Runs all sequence solver tasks from demo.yaml specified by the list of comma separated task names or descriptions, no matter whether the tasks are enabled or not", cxxopts::value<vector<string>>())
         ("types", "Runs all sequence solver tasks from demo.yaml that belong to any of the given comma separated sequence types, no matter whether the tasks are enabled or not", cxxopts::value<vector<string>>())
@@ -35,6 +39,7 @@ int main(int argc, char* argv[])
         exit(EXIT_SUCCESS);
     }
 
+    vector<string> rules;
     sequence_t sequence;
     vector<solverTask_t> solverTasks;
     vector<string> solverTasksToRun;
@@ -42,8 +47,13 @@ int main(int argc, char* argv[])
 
     bool allowMultiplePredictions = parsedOptions["allow-multiple-predictions"].as<bool>();
     bool runAllSolverTasks = parsedOptions["run-all-tasks"].as<bool>();
-    size_t requiredPredictedContinuationCount = parsedOptions["required-predicted-continuation-count"].as<size_t>();
+    size_t count = parsedOptions["count"].as<size_t>();
+    
+    generatorContext.sequenceLength = count;
     solverContext.maximumRecurrenceOrder = parsedOptions["max-recurrence-order"].as<int>();
+
+    if(parsedOptions.count("rules"))
+        rules = parsedOptions["rules"].as<vector<string>>();
 
     if(parsedOptions.count("sequence"))
         sequence = parsedOptions["sequence"].as<sequence_t>();
@@ -53,6 +63,9 @@ int main(int argc, char* argv[])
 
     if(parsedOptions.count("types"))
         solverTypesToRun = parsedOptions["types"].as<vector<string>>();
+
+    if(parsedOptions.count("start-index"))
+        generatorContext.startIndex = parsedOptions["start-index"].as<size_t>();
 
     try
     {
@@ -69,12 +82,22 @@ int main(int argc, char* argv[])
 
     cout << endl;
 
-    if(!sequence.empty())
+    if(!rules.empty())
+    {
+        cout << "Generating " << count << (count == 1 ? " term" : " terms") << " for sequence according to " << 
+            (rules.size() == 1 ? "rule" : "rules") << " ..." << endl;
+
+        sequence_t sequence = generate(rules, generatorContext);
+        cout << "Generated sequence: \033[93m" << sequence << "\033[0m" << endl;
+
+        cout << endl;
+    }
+    else if(!sequence.empty())
     {
         cout << "Solving sequence \033[93m" << sequence << "\033[0m ..." << endl;
 
         solverContext.allowMultiplePredictions = allowMultiplePredictions;
-        solverContext.requiredPredictedContinuationCount = requiredPredictedContinuationCount;
+        solverContext.requiredPredictedContinuationCount = count;
 
         solution_t solution = solve(sequence, solverContext);
         printSolution(solution, sequence, {});

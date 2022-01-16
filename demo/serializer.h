@@ -1,6 +1,7 @@
 #ifndef DEMO_SERIALIZER_H
 #define DEMO_SERIALIZER_H
 
+#define YAML_CPP_DLL
 #include <yaml-cpp/yaml.h>
 #include "types.h"
 

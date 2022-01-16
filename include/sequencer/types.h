@@ -79,6 +79,12 @@ namespace sequencer_n
         }
     };
 
+    struct generatorContext_t
+    {
+        size_t sequenceLength = 1;
+        size_t startIndex = 0;
+    };
+
     struct solverContext_t
     {
         size_t requiredPredictedContinuationCount = 1;

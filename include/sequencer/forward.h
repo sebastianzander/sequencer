@@ -12,6 +12,7 @@ namespace sequencer_n
     struct pattern_t;
     struct prediction_t;
     struct solution_t;
+    struct generatorContext_t;
     struct solverContext_t;
 
     using sequence_t = std::vector<double>;

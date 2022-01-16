@@ -6,3 +6,5 @@
 	shallow = true
 [submodule "cxxopts"]
 	shallow = true
+[submodule "muparser"]
+	shallow = true

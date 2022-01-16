@@ -2,6 +2,7 @@
 #define SEQUENCER_UTILS_H
 
 #include <cmath>
+#include "dll.h"
 #include "forward.h"
 
 namespace sequencer_n
@@ -18,8 +19,8 @@ namespace sequencer_n
         return std::fabs(a - b) <= ((std::fabs(a) < std::fabs(b) ? std::fabs(b) : std::fabs(a)) * epsilon);
     }
 
-    bool approximatelyEqual(const sequence_t &a, const sequence_t &b, const double epsilon);
-    bool approximatelyEqualLeastCommon(const sequence_t &standard, const sequence_t &suitor, const double epsilon);
+    bool SEQUENCER_CPP_API approximatelyEqual(const sequence_t &a, const sequence_t &b, const double epsilon);
+    bool SEQUENCER_CPP_API approximatelyEqualLeastCommon(const sequence_t &standard, const sequence_t &suitor, const double epsilon);
 
     inline bool virtuallyInteger(double a) {
         const double epsilon = calculateSuitableEpsilon(a);

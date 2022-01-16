@@ -90,12 +90,12 @@ solverTasks:
     allowMultiplePredictions: false
     enabled: false
   - name: Linear recursive sequence order(2)
-    description: s(0) = 0,  s(1) = 1,  s(n) = -3s(n-1) + s(n-2)
+    description: s(0) = 0,  s(1) = 1,  s(n) = 3s(n-1) + s(n-2)
     type: linear-recursive
     rules:
       - s(0) = 0
       - s(1) = 1
-      - s(n) = -3s(n-1) + s(n-2)
+      - s(n) = 3s(n-1) + s(n-2)
     sequence: [0, 1, 3, 10, 33, 109, 360, 1189]
     givenElementCount: 4
     requiredPredictedContinuationCount: 2

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.21)
 project(demo LANGUAGES CXX VERSION 1.0.0)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -25,4 +25,10 @@ target_link_libraries(demo PRIVATE
     sequencer 
     fmt 
     yaml-cpp
+    muparser
+)
+
+add_custom_command(TARGET demo POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:demo> $<TARGET_FILE_DIR:demo>
+    COMMAND_EXPAND_LISTS
 )

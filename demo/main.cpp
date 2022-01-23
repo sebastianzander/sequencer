@@ -11,7 +11,7 @@
 using namespace std;
 using namespace sequencer_n;
 
-void printSolution(const solution_t &solution, const sequence_t &sequence, const sequence_t &continuation);
+void printSolution(const solution_t &solution, const sequence_t &sequence, const sequence_t &continuation, bool omitPredictedRules);
 std::ostream& operator<<(std::ostream &os, const sequence_t &sequence);
 
 int main(int argc, char* argv[])
@@ -25,6 +25,7 @@ int main(int argc, char* argv[])
         ("r,rules", "Generates a sequence from the given list of semicolon separated sequence rules", cxxopts::value<vector<string>>())
         ("s,sequence", "Solves the sequence specified by the list of semicolon separated integer or real numbers and returns the predicted continuation of the sequence", cxxopts::value<vector<double>>())
         ("m,allow-multiple-predictions", "Enables whether the sequence solver is allowed to return multiple predictions if there is ambiguity or uncertainty", cxxopts::value<bool>()->default_value("false"))
+        ("omit-predicted-rules", "Omits the printing of predicted sequence rules in sequence solutions", cxxopts::value<bool>()->default_value("false"))
         ("c,count", "Sets the length of the sequence to be generated (if -r) or the length of the predicted continuation of the given sequence (if -s)", cxxopts::value<size_t>()->default_value("1"))
         ("start-index", "Sets the start index of the sequence to be generated", cxxopts::value<size_t>()->default_value("0"))
         ("a,run-all-tasks", "Runs all sequence solver tasks from demo.yaml, no matter whether they are enabled or not", cxxopts::value<bool>()->default_value("false"))
@@ -46,6 +47,7 @@ int main(int argc, char* argv[])
     vector<string> solverTypesToRun;
 
     bool allowMultiplePredictions = parsedOptions["allow-multiple-predictions"].as<bool>();
+    bool omitPredictedRules = parsedOptions["omit-predicted-rules"].as<bool>();
     bool runAllSolverTasks = parsedOptions["run-all-tasks"].as<bool>();
     size_t count = parsedOptions["count"].as<size_t>();
     
@@ -87,9 +89,9 @@ int main(int argc, char* argv[])
         cout << "Generating " << count << (count == 1 ? " term" : " terms") << " for sequence according to " << 
             (rules.size() == 1 ? "rule" : "rules") << " ..." << endl;
 
-        sequence_t sequence = generate(rules, generatorContext);
+        const auto &sequence = generate(rules, generatorContext);
         if(!sequence.empty())
-            cout << "Generated sequence: \033[93m" << sequence << "\033[0m" << endl;
+            cout << "Generated sequence: \033[94m" << sequence << "\033[0m" << endl;
 
         cout << endl;
     }
@@ -100,8 +102,8 @@ int main(int argc, char* argv[])
         solverContext.allowMultiplePredictions = allowMultiplePredictions;
         solverContext.requiredPredictedContinuationCount = count;
 
-        solution_t solution = solve(sequence, solverContext);
-        printSolution(solution, sequence, {});
+        const auto &solution = solve(sequence, solverContext);
+        printSolution(solution, sequence, {}, omitPredictedRules);
 
         cout << endl;
     }
@@ -133,7 +135,7 @@ int main(int argc, char* argv[])
             solverContext.requiredPredictedContinuationCount = task.requiredPredictedContinuationCount;
             
             solution_t solution = solve(task.testSequence, solverContext);
-            printSolution(solution, task.testSequence, task.continuation);
+            printSolution(solution, task.testSequence, task.continuation, omitPredictedRules);
 
             cout << endl;
         }
@@ -142,7 +144,7 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-void printSolution(const solution_t &solution, const sequence_t &sequence, const sequence_t &continuation)
+void printSolution(const solution_t &solution, const sequence_t &sequence, const sequence_t &continuation, bool omitPredictedRules)
 {
     const auto predictionsCount = solution.predictions.size();
             
@@ -172,8 +174,11 @@ void printSolution(const solution_t &solution, const sequence_t &sequence, const
                 else
                     cout << endl;
 
-                for(auto const &description : prediction.descriptionList)
-                    cout << "  " << description << endl;
+                if(!omitPredictedRules)
+                {
+                    for(auto const &description : prediction.descriptionList)
+                        cout << "  " << description << endl;
+                }
 
                 if(predictionApproximatelyEqual || continuation.empty())
                 {

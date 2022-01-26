@@ -54,7 +54,8 @@ namespace sequencer_n
             {
                 prediction_t prediction;
                 prediction.sequenceType = sequenceType_t::UNSPECIFIED;
-                prediction.predictedContinuation.push_back(sequence[0]);
+                for(size_t i = 0; i < context.requiredPredictedContinuationCount; i++)
+                    prediction.predictedContinuation.push_back(sequence[0]);
                 result.predictions.emplace_back(prediction);
             }
             return result;

@@ -37,14 +37,14 @@ namespace sequencer_n
         static regex indexPattern(R"(^[\s0]*(\d+)$)", regex_constants::optimize);
 
         sequence_t sequence {};
-        //map<size_t, double> constants;
-        map_c termMap;
-        auto &constants = termMap.constants;
+        auto &constants = map_c::constants;
         size_t numElements = 0;
         const size_t endIndex = context.startIndex + context.sequenceLength;
 
         if(description.empty() || context.sequenceLength == 0)
             return sequence;
+
+        constants.clear();
 
         auto isWhiteSpace = [](unsigned char x) {
             return std::isspace(x);
@@ -233,7 +233,7 @@ namespace sequencer_n
             {
                 int32_t startIndex = context.startIndex;
 
-                if(!constants.empty())
+                /* if(!constants.empty())
                 {
                     const auto firstIndex = constants.begin()->first;
                     const auto lastIndex = constants.rbegin()->first;
@@ -246,7 +246,7 @@ namespace sequencer_n
                 {
                     const auto minOffset = *indexOffsets.begin();
                     startIndex = context.startIndex + minOffset;
-                }
+                } */
 
                 for(size_t index = startIndex; index < endIndex; index++)
                 {

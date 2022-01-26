@@ -34,3 +34,4 @@ target_link_libraries(sequencer PUBLIC
 
 add_subdirectory("${CMAKE_SOURCE_DIR}/thirdparty")
 add_subdirectory("${CMAKE_SOURCE_DIR}/demo")
+add_subdirectory("${CMAKE_SOURCE_DIR}/test")
